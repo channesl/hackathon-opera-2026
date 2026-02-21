@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Pirata+One&family=Inter:wght@400;500;600;700&display=swap');
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -6,42 +8,68 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  background: linear-gradient(160deg, #0a0e17 0%, #1a1a2e 40%, #16213e 100%);
   min-height: 100vh;
-  color: #e0e0e0;
+  color: #e0d8c8;
   padding: 24px;
+  position: relative;
+  overflow-x: hidden;
 }
 
+/* Subtle repeating wave pattern overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 80%, rgba(212, 168, 67, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(0, 120, 150, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Header ──────────────────────── */
 .app-header {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 32px;
 }
 
 .app-header h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  background: linear-gradient(90deg, #00d2ff, #7b2ff7);
+  font-family: 'Pirata One', cursive;
+  font-size: 2.8rem;
+  font-weight: 400;
+  background: linear-gradient(135deg, #f0c75e 0%, #d4a843 40%, #c9963a 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  text-shadow: none;
+  filter: drop-shadow(0 2px 8px rgba(212, 168, 67, 0.3));
 }
 
 .app-header p {
-  color: #8e8ea0;
+  color: #8e8a7c;
   font-size: 0.95rem;
+  font-style: italic;
 }
 
+/* ─── Card ────────────────────────── */
 .card {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(30, 25, 20, 0.7);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(212, 168, 67, 0.15);
   border-radius: 16px;
   padding: 28px;
-  max-width: 720px;
+  max-width: 620px;
   margin: 0 auto 24px;
 }
 
+/* ─── Search ──────────────────────── */
 .search-group {
   margin-bottom: 18px;
   position: relative;
@@ -49,11 +77,11 @@ body {
 
 .search-group label {
   display: block;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  color: #7b8794;
+  font-family: 'Pirata One', cursive;
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #c9963a;
   margin-bottom: 8px;
 }
 
@@ -61,48 +89,49 @@ body {
   width: 100%;
   padding: 14px 18px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.07);
-  color: #fff;
+  border: 1px solid rgba(212, 168, 67, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: #e0d8c8;
   font-size: 1rem;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .search-group input::placeholder {
-  color: #555;
+  color: #5a5548;
 }
 
 .search-group input:focus {
-  border-color: #7b2ff7;
-  box-shadow: 0 0 0 3px rgba(123, 47, 247, 0.25);
+  border-color: #d4a843;
+  box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.2);
 }
 
 .search-group input.selected {
-  border-color: #00d2ff;
-  box-shadow: 0 0 0 2px rgba(0, 210, 255, 0.2);
+  border-color: #f0c75e;
+  box-shadow: 0 0 0 2px rgba(240, 199, 94, 0.2);
 }
 
+/* ─── Autocomplete ────────────────── */
 .autocomplete-list {
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
-  background: #1e1e2f;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #1a1510;
+  border: 1px solid rgba(212, 168, 67, 0.2);
   border-radius: 10px;
   margin-top: 4px;
   max-height: 220px;
   overflow-y: auto;
   z-index: 100;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
 }
 
 .autocomplete-item {
   padding: 12px 18px;
   cursor: pointer;
   transition: background 0.15s;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(212, 168, 67, 0.06);
 }
 
 .autocomplete-item:last-child {
@@ -110,39 +139,63 @@ body {
 }
 
 .autocomplete-item:hover {
-  background: rgba(123, 47, 247, 0.15);
+  background: rgba(212, 168, 67, 0.1);
 }
 
 .autocomplete-item .poi-title {
   font-weight: 600;
-  color: #e0e0e0;
+  color: #e0d8c8;
   font-size: 0.95rem;
 }
 
 .autocomplete-item .poi-building {
   font-size: 0.8rem;
-  color: #7b8794;
+  color: #8e8a7c;
   margin-top: 2px;
 }
 
+/* ─── Swap Button ─────────────────── */
+.swap-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: -6px auto 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(212, 168, 67, 0.1);
+  border: 1px solid rgba(212, 168, 67, 0.2);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.3s;
+  font-size: 1.1rem;
+  color: #d4a843;
+}
+
+.swap-btn:hover {
+  background: rgba(212, 168, 67, 0.2);
+  transform: rotate(180deg);
+}
+
+/* ─── Main Action Button ─────────── */
 .btn-route {
   width: 100%;
   padding: 16px;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(135deg, #7b2ff7, #00d2ff);
-  color: white;
-  font-size: 1.05rem;
-  font-weight: 700;
+  background: linear-gradient(135deg, #d4a843, #8b6914);
+  color: #1a1510;
+  font-family: 'Pirata One', cursive;
+  font-size: 1.2rem;
+  font-weight: 400;
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   margin-top: 6px;
 }
 
 .btn-route:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 24px rgba(123, 47, 247, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px rgba(212, 168, 67, 0.35);
 }
 
 .btn-route:active {
@@ -150,12 +203,13 @@ body {
 }
 
 .btn-route:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
 }
 
+/* ─── Status Messages ─────────────── */
 .status {
   padding: 12px 16px;
   border-radius: 10px;
@@ -165,112 +219,252 @@ body {
 }
 
 .status.loading {
-  background: rgba(255, 193, 7, 0.12);
-  color: #ffc107;
-  border: 1px solid rgba(255, 193, 7, 0.2);
+  background: rgba(212, 168, 67, 0.1);
+  color: #d4a843;
+  border: 1px solid rgba(212, 168, 67, 0.2);
 }
 
 .status.success {
-  background: rgba(76, 175, 80, 0.12);
+  background: rgba(76, 175, 80, 0.1);
   color: #81c784;
-  border: 1px solid rgba(76, 175, 80, 0.2);
+  border: 1px solid rgba(76, 175, 80, 0.15);
 }
 
 .status.error {
-  background: rgba(244, 67, 54, 0.12);
-  color: #ef5350;
-  border: 1px solid rgba(244, 67, 54, 0.2);
+  background: rgba(200, 60, 50, 0.1);
+  color: #e57373;
+  border: 1px solid rgba(200, 60, 50, 0.15);
 }
 
-.route-summary {
-  display: flex;
-  gap: 16px;
+/* ─── Treasure Step Card ──────────── */
+.treasure-card {
+  max-width: 620px;
+  margin: 0 auto 24px;
+  background: rgba(30, 25, 20, 0.75);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 168, 67, 0.25);
+  border-radius: 16px;
+  padding: 32px 28px;
+  position: relative;
+  overflow: hidden;
 }
 
-.route-stat {
-  flex: 1;
-  background: rgba(123, 47, 247, 0.1);
-  border: 1px solid rgba(123, 47, 247, 0.2);
-  border-radius: 12px;
-  padding: 16px;
-  text-align: center;
+/* Gold shimmer border effect */
+.treasure-card::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: -1px; right: -1px; bottom: -1px;
+  border-radius: 17px;
+  background: linear-gradient(135deg,
+    rgba(240, 199, 94, 0) 0%,
+    rgba(240, 199, 94, 0.3) 50%,
+    rgba(240, 199, 94, 0) 100%
+  );
+  background-size: 200% 200%;
+  animation: goldShimmer 4s ease-in-out infinite;
+  z-index: -1;
+  pointer-events: none;
 }
 
-.route-stat .value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #b388ff;
+@keyframes goldShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
-.route-stat .label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: #7b8794;
-  margin-top: 4px;
+/* Progress */
+.treasure-progress {
+  margin-bottom: 24px;
 }
 
-.instructions-panel {
+.treasure-progress-label {
   display: block;
+  font-family: 'Pirata One', cursive;
+  font-size: 0.95rem;
+  color: #c9963a;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
 }
 
-.instruction-step {
+.treasure-progress-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.treasure-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #8b6914, #d4a843, #f0c75e);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* Clue */
+.treasure-clue-wrapper {
   display: flex;
+  gap: 18px;
   align-items: flex-start;
-  gap: 14px;
-  padding: 14px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 28px;
 }
 
-.instruction-step:last-child {
-  border-bottom: none;
-}
-
-.step-number {
-  min-width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #7b2ff7, #5a1dbf);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: white;
+.treasure-clue-decoration {
+  font-size: 2.2rem;
+  line-height: 1;
   flex-shrink: 0;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+  animation: skullBob 3s ease-in-out infinite;
 }
 
-.step-content {
+@keyframes skullBob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(3deg); }
+}
+
+.treasure-clue {
   flex: 1;
 }
 
-.step-text {
-  font-size: 0.92rem;
-  line-height: 1.5;
-  color: #d0d0d0;
+.treasure-clue-text {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: #e0d8c8;
+  font-weight: 500;
 }
 
-.step-distance {
-  font-size: 0.78rem;
-  color: #7b8794;
-  margin-top: 4px;
+.treasure-clue-distance {
+  font-size: 0.85rem;
+  color: #8e8a7c;
+  margin-top: 8px;
+  font-style: italic;
 }
 
+/* Navigation Buttons */
+.treasure-nav {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.btn-treasure-nav {
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-family: 'Pirata One', cursive;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+  border: none;
+  letter-spacing: 0.5px;
+}
+
+.btn-treasure-prev {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(212, 168, 67, 0.2);
+  color: #c9963a;
+}
+
+.btn-treasure-prev:hover:not(:disabled) {
+  background: rgba(212, 168, 67, 0.12);
+}
+
+.btn-treasure-prev:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn-treasure-next {
+  background: linear-gradient(135deg, #d4a843, #8b6914);
+  color: #1a1510;
+  flex: 1;
+  max-width: 280px;
+}
+
+.btn-treasure-next:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(212, 168, 67, 0.3);
+}
+
+.btn-treasure-finish {
+  background: linear-gradient(135deg, #f0c75e, #d4a843);
+  color: #1a1510;
+  flex: 1;
+  max-width: 280px;
+  animation: pulseGold 2s ease-in-out infinite;
+}
+
+@keyframes pulseGold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(240, 199, 94, 0.3); }
+  50% { box-shadow: 0 0 20px 4px rgba(240, 199, 94, 0.2); }
+}
+
+.btn-treasure-finish:hover {
+  transform: translateY(-1px);
+}
+
+/* Celebration */
+.treasure-celebration {
+  text-align: center;
+  padding: 24px 0;
+}
+
+.treasure-icon-big {
+  font-size: 4rem;
+  margin-bottom: 16px;
+  animation: celebrationBounce 1s ease-out;
+}
+
+@keyframes celebrationBounce {
+  0% { transform: scale(0) rotate(-30deg); opacity: 0; }
+  60% { transform: scale(1.2) rotate(5deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.treasure-found-title {
+  font-family: 'Pirata One', cursive;
+  font-size: 2rem;
+  background: linear-gradient(135deg, #f0c75e, #d4a843);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+}
+
+.treasure-found-text {
+  color: #8e8a7c;
+  font-size: 1rem;
+  margin-bottom: 28px;
+  font-style: italic;
+}
+
+.btn-treasure-reset {
+  padding: 14px 28px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #d4a843, #8b6914);
+  color: #1a1510;
+  font-family: 'Pirata One', cursive;
+  font-size: 1.1rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.btn-treasure-reset:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(212, 168, 67, 0.3);
+}
+
+/* Card fade-in */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.card-fade {
-  animation: fadeIn 0.4s ease;
+.card-fade,
+.treasure-card-fade {
+  animation: fadeIn 0.5s ease;
 }
 
+/* Scrollbar */
 .autocomplete-list::-webkit-scrollbar {
   width: 6px;
 }
@@ -280,280 +474,31 @@ body {
 }
 
 .autocomplete-list::-webkit-scrollbar-thumb {
-  background: rgba(123, 47, 247, 0.4);
+  background: rgba(212, 168, 67, 0.3);
   border-radius: 3px;
 }
 
-.swap-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: -6px auto 10px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  cursor: pointer;
-  transition: background 0.15s, transform 0.2s;
-  font-size: 1.1rem;
-  color: #b388ff;
-}
-
-.swap-btn:hover {
-  background: rgba(123, 47, 247, 0.2);
-  transform: rotate(180deg);
-}
-
-.card-label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  color: #7b8794;
-  font-weight: 600;
-  margin-bottom: 14px;
-}
-
-.card-section-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #b388ff;
-  margin-bottom: 16px;
-}
-
-.results-row {
-  max-width: 1200px;
-  margin: 0 auto 24px;
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
-  animation: fadeIn 0.4s ease;
-}
-
-.results-row .card {
-  max-width: none;
-  margin: 0;
-  flex: 1;
-}
-
-#instructionsCard {
-  flex: 0 0 340px;
-  max-height: 540px;
-  overflow-y: auto;
-}
-
-#mapCard {
-  flex: 1;
-  min-width: 0;
-}
-
-.map-embed {
-  width: 100%;
-  height: 480px;
-  border: none;
-  border-radius: 12px;
-  display: block;
-}
-
-.btn-download {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 16px;
-  padding: 10px 18px;
-  border: 1px solid rgba(0, 210, 255, 0.4);
-  border-radius: 8px;
-  background: rgba(0, 210, 255, 0.08);
-  color: #00d2ff;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-}
-
-.btn-download:hover {
-  background: rgba(0, 210, 255, 0.18);
-  border-color: rgba(0, 210, 255, 0.7);
-}
-
-/* Print preview modal */
-.preview-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.preview-modal {
-  background: #1e1e2f;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 16px;
-  width: min(640px, 90vw);
-  max-height: 80vh;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
-}
-
-.preview-modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.preview-modal-header h2 {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #b388ff;
-}
-
-.preview-close {
-  background: none;
-  border: none;
-  color: #7b8794;
-  font-size: 1.4rem;
-  cursor: pointer;
-  line-height: 1;
-  padding: 0 4px;
-}
-
-.preview-close:hover {
-  color: #e0e0e0;
-}
-
-.preview-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px 24px;
-}
-
-.preview-text {
-  font-family: 'Courier New', monospace;
-  font-size: 0.85rem;
-  line-height: 1.7;
-  color: #d0d0d0;
-  white-space: pre-wrap;
-  word-break: break-word;
-  width: 100%;
-  min-height: 280px;
-  resize: vertical;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  padding: 8px;
-  outline: none;
-}
-
-.preview-text:focus {
-  border-color: rgba(123, 47, 247, 0.5);
-}
-
-.preview-modal-footer {
-  display: flex;
-  gap: 12px;
-  padding: 16px 24px 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  justify-content: flex-end;
-}
-
-.btn-preview-print {
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: 1px solid rgba(123, 47, 247, 0.5);
-  background: rgba(123, 47, 247, 0.12);
-  color: #b388ff;
-  font-size: 0.88rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.btn-preview-print:hover {
-  background: rgba(123, 47, 247, 0.25);
-}
-
-.btn-preview-save {
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: 1px solid rgba(0, 210, 255, 0.5);
-  background: rgba(0, 210, 255, 0.12);
-  color: #00d2ff;
-  font-size: 0.88rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.btn-preview-save:hover {
-  background: rgba(0, 210, 255, 0.25);
-}
-
-/* Route Instructions — plain card, easy to restyle */
-.route-instructions-card {
-  max-width: 1200px;
-  margin: 0 auto 24px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 24px 28px;
-}
-
-.route-instructions-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #b388ff;
-  margin-bottom: 16px;
-}
-
-.route-instructions-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.route-instructions-item {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  counter-increment: step;
-}
-
-.route-instructions-item:last-child {
-  border-bottom: none;
-}
-
-.route-instructions-text {
-  flex: 1;
-  font-size: 0.92rem;
-  line-height: 1.5;
-  color: #d0d0d0;
-}
-
-.route-instructions-dist {
-  font-size: 0.78rem;
-  color: #7b8794;
-  white-space: nowrap;
-}
-
-.route-instructions-error {
-  color: #ef5350;
-  font-size: 0.9rem;
-}
-
-@media (max-width: 700px) {
-  .results-row {
-    flex-direction: column;
+/* Responsive */
+@media (max-width: 600px) {
+  body {
+    padding: 16px;
   }
-  #instructionsCard {
-    flex: none;
-    max-height: none;
+
+  .app-header h1 {
+    font-size: 2rem;
+  }
+
+  .card,
+  .treasure-card {
+    padding: 20px;
+  }
+
+  .treasure-clue-text {
+    font-size: 1rem;
+  }
+
+  .btn-treasure-nav {
+    padding: 10px 16px;
+    font-size: 0.9rem;
   }
 }

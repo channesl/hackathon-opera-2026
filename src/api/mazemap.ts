@@ -53,15 +53,15 @@ export async function searchLocations(query: string): Promise<Poi[]> {
       s ? s.replace(/<[^>]*>/g, '').trim() : '';
 
     return results.map(item => ({
-      title:        stripHtml(item.title || item.name || item.buildingName || 'Unknown'),
+      title: stripHtml(item.title || item.name || item.buildingName || 'Unknown'),
       buildingName: item.buildingName || null,
-      floorName:    item.floorName || null,
-      point:        item.point || (item.geometry?.coordinates
-                      ? { coordinates: item.geometry.coordinates }
-                      : null),
-      z:            item.z ?? 0,
-      poiId:        item.poiId || null,
-      _type:        item.type || 'poi',
+      floorName: item.floorName || null,
+      point: item.point || (item.geometry?.coordinates
+        ? { coordinates: item.geometry.coordinates }
+        : null),
+      z: item.z ?? 0,
+      poiId: item.poiId || null,
+      _type: item.type || 'poi',
     }));
   } catch (e) {
     console.warn('equery failed, falling back to /api/pois/', e);
@@ -88,11 +88,6 @@ export function getPoiLatLng(poi: Poi): LatLng | null {
   return { lat: coords[1], lng: coords[0] };
 }
 
-export function buildMapEmbedUrl(startCoords: LatLng, endCoords: LatLng, startZ: number, endZ: number): string {
-  return `https://use.mazemap.com/?campusid=${CAMPUS_ID}` +
-    `&starttype=point&start=${startCoords.lng},${startCoords.lat},${startZ}` +
-    `&desttype=point&dest=${endCoords.lng},${endCoords.lat},${endZ}`;
-}
 
 export async function fetchRoute(selectedStart: Poi, selectedEnd: Poi): Promise<FetchRouteResult> {
   const startCoords = getPoiLatLng(selectedStart);

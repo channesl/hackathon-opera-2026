@@ -1,17 +1,11 @@
 import { useState } from 'react';
 import SearchInput from './components/SearchInput';
-import RouteStats from './components/RouteStats';
-import MapCard from './components/MapCard';
-import RouteInstructions from './components/RouteInstructions';
-import { fetchRoute, extractInstructions, buildMapEmbedUrl, getPoiLatLng, Poi, RouteStep } from './api/mazemap';
+import TreasureStep from './components/TreasureStep';
+import { fetchRoute, extractInstructions, Poi, RouteStep } from './api/mazemap';
 
 interface RouteData {
   steps: RouteStep[];
   stepsError: string | null;
-  totalDistance: number;
-  totalTime: number;
-  embedUrl: string;
-  mapOnly: boolean;
 }
 
 interface Status {
@@ -27,6 +21,7 @@ export default function App() {
   const [status, setStatus] = useState<Status | null>(null);
   const [loading, setLoading] = useState(false);
   const [routeData, setRouteData] = useState<RouteData | null>(null);
+  const [currentStep, setCurrentStep] = useState(0);
 
   const handleSwap = () => {
     setStartValue(endValue);
@@ -37,52 +32,54 @@ export default function App() {
 
   const handleFindRoute = async () => {
     if (!selectedStart || !selectedEnd) {
-      setStatus({ msg: '⚠️ Please select both a start and end location from the suggestions.', type: 'error' });
+      setStatus({ msg: '⚠️ Pick both yer departure port and treasure destination, matey!', type: 'error' });
       return;
     }
 
     setLoading(true);
-    setStatus({ msg: '🔍 Finding the best route...', type: 'loading' });
+    setStatus({ msg: '🔍 Chartin\' yer course across the campus seas...', type: 'loading' });
     setRouteData(null);
+    setCurrentStep(0);
 
     try {
-      const { tripData, startCoords, endCoords, startZ, endZ } = await fetchRoute(selectedStart, selectedEnd);
-      const { steps, error: stepsError, totalDistance, totalTime } = extractInstructions(tripData, selectedStart, selectedEnd);
-      const embedUrl = buildMapEmbedUrl(startCoords, endCoords, startZ, endZ);
+      const { tripData } = await fetchRoute(selectedStart, selectedEnd);
+      const { steps, error: stepsError } = extractInstructions(tripData, selectedStart, selectedEnd);
 
-      setRouteData({ steps, stepsError, totalDistance, totalTime, embedUrl, mapOnly: false });
-      setStatus({ msg: '🎉 Route found! Follow the instructions below.', type: 'success' });
+      setRouteData({ steps, stepsError });
 
+      if (stepsError) {
+        setStatus({ msg: `☠️ ${stepsError}`, type: 'error' });
+      } else {
+        setStatus({ msg: '🏴‍☠️ Yer treasure map be ready! Follow the clues...', type: 'success' });
+      }
     } catch (err) {
       console.error('Routing error:', err);
-      try {
-        const startCoords = getPoiLatLng(selectedStart);
-        const endCoords = getPoiLatLng(selectedEnd);
-        if (startCoords && endCoords) {
-          const embedUrl = buildMapEmbedUrl(startCoords, endCoords, selectedStart.z || 0, selectedEnd.z || 0);
-          setRouteData({ steps: [], stepsError: 'Turn-by-turn instructions could not be loaded for this route.', totalDistance: 0, totalTime: 0, embedUrl, mapOnly: true });
-          setStatus({ msg: '🗺️ Route shown on map. Turn-by-turn instructions unavailable for this route.', type: 'loading' });
-        } else {
-          setStatus({ msg: `❌ Could not find route: ${(err as Error).message}`, type: 'error' });
-        }
-      } catch {
-        setStatus({ msg: `❌ Could not find route: ${(err as Error).message}`, type: 'error' });
-      }
+      setStatus({ msg: `☠️ Arr! The seas be rough: ${(err as Error).message}`, type: 'error' });
     } finally {
       setLoading(false);
     }
   };
 
+  const handleReset = () => {
+    setRouteData(null);
+    setCurrentStep(0);
+    setStartValue('');
+    setEndValue('');
+    setSelectedStart(null);
+    setSelectedEnd(null);
+    setStatus(null);
+  };
+
   return (
     <>
       <div className="app-header">
-        <h1>🗺️ LiU Campus Navigator</h1>
-        <p>Find routes between any locations on Campus Valla</p>
+        <h1>🏴‍☠️ Campus Treasure Hunt</h1>
+        <p>Chart yer course across Campus Valla, ye scallywag!</p>
       </div>
 
       <div className="card">
         <SearchInput
-          label="📍 Start Location"
+          label="⚓ Departure Port"
           placeholder="e.g. Kårallen, Studenthuset..."
           value={startValue}
           onChange={setStartValue}
@@ -93,7 +90,7 @@ export default function App() {
         <button className="swap-btn" onClick={handleSwap} title="Swap start and end">⇅</button>
 
         <SearchInput
-          label="🏁 Destination"
+          label="🏴‍☠️ Treasure Location"
           placeholder="e.g. C1, Key1, Zenit..."
           value={endValue}
           onChange={setEndValue}
@@ -102,7 +99,7 @@ export default function App() {
         />
 
         <button className="btn-route" onClick={handleFindRoute} disabled={loading}>
-          🚶 Find Route
+          🗺️ Find Treasure Route
         </button>
 
         {status && (
@@ -110,26 +107,13 @@ export default function App() {
         )}
       </div>
 
-      {routeData && !routeData.mapOnly && (
-        <div style={{ maxWidth: '720px', margin: '0 auto' }}>
-          <RouteStats
-            totalDistance={routeData.totalDistance}
-            totalTime={routeData.totalTime}
-            stepCount={routeData.steps.length}
-          />
-        </div>
-      )}
-
-      {routeData && (
-        <div className="results-row" style={{ maxWidth: '1200px' }}>
-          <MapCard embedUrl={routeData.embedUrl} />
-        </div>
-      )}
-
-      {routeData && (
-        <RouteInstructions
+      {routeData && !routeData.stepsError && routeData.steps.length > 0 && (
+        <TreasureStep
           steps={routeData.steps}
-          error={routeData.stepsError}
+          currentStep={currentStep}
+          onNext={() => setCurrentStep(s => s + 1)}
+          onPrev={() => setCurrentStep(s => Math.max(0, s - 1))}
+          onReset={handleReset}
         />
       )}
     </>
