@@ -3,17 +3,30 @@ import SearchInput from './components/SearchInput';
 import RouteStats from './components/RouteStats';
 import MapCard from './components/MapCard';
 import RouteInstructions from './components/RouteInstructions';
-import { fetchRoute, extractInstructions, buildMapEmbedUrl, getPoiLatLng } from './api/mazemap';
+import { fetchRoute, extractInstructions, buildMapEmbedUrl, getPoiLatLng, Poi, RouteStep } from './api/mazemap';
+
+interface RouteData {
+  steps: RouteStep[];
+  stepsError: string | null;
+  totalDistance: number;
+  totalTime: number;
+  embedUrl: string;
+  mapOnly: boolean;
+}
+
+interface Status {
+  msg: string;
+  type: 'error' | 'loading' | 'success';
+}
 
 export default function App() {
   const [startValue, setStartValue] = useState('');
   const [endValue, setEndValue] = useState('');
-  const [selectedStart, setSelectedStart] = useState(null);
-  const [selectedEnd, setSelectedEnd] = useState(null);
-  const [status, setStatus] = useState(null); // { msg, type }
+  const [selectedStart, setSelectedStart] = useState<Poi | null>(null);
+  const [selectedEnd, setSelectedEnd] = useState<Poi | null>(null);
+  const [status, setStatus] = useState<Status | null>(null);
   const [loading, setLoading] = useState(false);
-  const [routeData, setRouteData] = useState(null);
-  // routeData: { steps, stepsError, totalDistance, totalTime, embedUrl, mapOnly }
+  const [routeData, setRouteData] = useState<RouteData | null>(null);
 
   const handleSwap = () => {
     setStartValue(endValue);
@@ -50,10 +63,10 @@ export default function App() {
           setRouteData({ steps: [], stepsError: 'Turn-by-turn instructions could not be loaded for this route.', totalDistance: 0, totalTime: 0, embedUrl, mapOnly: true });
           setStatus({ msg: '🗺️ Route shown on map. Turn-by-turn instructions unavailable for this route.', type: 'loading' });
         } else {
-          setStatus({ msg: `❌ Could not find route: ${err.message}`, type: 'error' });
+          setStatus({ msg: `❌ Could not find route: ${(err as Error).message}`, type: 'error' });
         }
       } catch {
-        setStatus({ msg: `❌ Could not find route: ${err.message}`, type: 'error' });
+        setStatus({ msg: `❌ Could not find route: ${(err as Error).message}`, type: 'error' });
       }
     } finally {
       setLoading(false);

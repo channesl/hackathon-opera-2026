@@ -1,4 +1,8 @@
-export default function MapCard({ embedUrl }) {
+interface MapCardProps {
+  embedUrl: string;
+}
+
+export default function MapCard({ embedUrl }: MapCardProps) {
   return (
     <div className="card" id="mapCard">
       <h3 className="card-section-title">🗺️ Route Map</h3>

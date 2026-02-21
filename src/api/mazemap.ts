@@ -2,16 +2,55 @@ const CAMPUS_ID = 742;
 
 export { CAMPUS_ID };
 
-export async function searchLocations(query) {
+export interface LatLng {
+  lat: number;
+  lng: number;
+}
+
+export interface Poi {
+  title: string;
+  buildingName: string | null;
+  floorName: string | null;
+  point: { coordinates: number[] } | null;
+  z: number;
+  poiId: number | null;
+  _type: string;
+}
+
+export interface RouteStep {
+  text: string;
+  distanceMeters: number;
+  durationSeconds: number;
+  floor: number | null;
+}
+
+export interface ExtractedRoute {
+  steps: RouteStep[];
+  error: string | null;
+  totalDistance: number;
+  totalTime: number;
+}
+
+export interface FetchRouteResult {
+  tripData: unknown;
+  startCoords: LatLng;
+  endCoords: LatLng;
+  startZ: number;
+  endZ: number;
+}
+
+export async function searchLocations(query: string): Promise<Poi[]> {
   if (!query || query.length < 2) return [];
 
   const equeryUrl = `https://api.mazemap.com/search/equery/?campusid=${CAMPUS_ID}&q=${encodeURIComponent(query)}&lang=en&rows=10`;
 
   try {
     const data = await fetch(equeryUrl).then(r => r.json());
-    const results = data.result || data.pois || [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const results: any[] = data.result || data.pois || [];
 
-    const stripHtml = s => s ? s.replace(/<[^>]*>/g, '').trim() : s;
+    const stripHtml = (s: string | null | undefined): string =>
+      s ? s.replace(/<[^>]*>/g, '').trim() : '';
 
     return results.map(item => ({
       title:        stripHtml(item.title || item.name || item.buildingName || 'Unknown'),
@@ -33,14 +72,14 @@ export async function searchLocations(query) {
   }
 }
 
-export function mercatorToLatLng(x, y) {
+export function mercatorToLatLng(x: number, y: number): LatLng {
   const lng = (x / 20037508.34) * 180;
   let lat = (y / 20037508.34) * 180;
   lat = (180 / Math.PI) * (2 * Math.atan(Math.exp(lat * Math.PI / 180)) - Math.PI / 2);
   return { lat, lng };
 }
 
-export function getPoiLatLng(poi) {
+export function getPoiLatLng(poi: Poi): LatLng | null {
   const coords = poi.point?.coordinates;
   if (!coords) return null;
   if (Math.abs(coords[0]) > 180) {
@@ -49,13 +88,13 @@ export function getPoiLatLng(poi) {
   return { lat: coords[1], lng: coords[0] };
 }
 
-export function buildMapEmbedUrl(startCoords, endCoords, startZ, endZ) {
+export function buildMapEmbedUrl(startCoords: LatLng, endCoords: LatLng, startZ: number, endZ: number): string {
   return `https://use.mazemap.com/?campusid=${CAMPUS_ID}` +
     `&starttype=point&start=${startCoords.lng},${startCoords.lat},${startZ}` +
     `&desttype=point&dest=${endCoords.lng},${endCoords.lat},${endZ}`;
 }
 
-export async function fetchRoute(selectedStart, selectedEnd) {
+export async function fetchRoute(selectedStart: Poi, selectedEnd: Poi): Promise<FetchRouteResult> {
   const startCoords = getPoiLatLng(selectedStart);
   const endCoords = getPoiLatLng(selectedEnd);
 
@@ -66,13 +105,13 @@ export async function fetchRoute(selectedStart, selectedEnd) {
   const startZ = selectedStart.z || 0;
   const endZ = selectedEnd.z || 0;
 
-  const startId = selectedStart.poiId || selectedStart.id;
-  const endId = selectedEnd.poiId || selectedEnd.id;
+  const startId = selectedStart.poiId;
+  const endId = selectedEnd.poiId;
 
-  const params = new URLSearchParams({ campusCollectionId: CAMPUS_ID, mode: 'PEDESTRIAN', lang: 'en' });
-  if (startId) params.set('fromPoiId', startId);
+  const params = new URLSearchParams({ campusCollectionId: String(CAMPUS_ID), mode: 'PEDESTRIAN', lang: 'en' });
+  if (startId) params.set('fromPoiId', String(startId));
   else params.set('fromLngLatZ', `${startCoords.lng},${startCoords.lat},${startZ}`);
-  if (endId) params.set('toPoiId', endId);
+  if (endId) params.set('toPoiId', String(endId));
   else params.set('toLngLatZ', `${endCoords.lng},${endCoords.lat},${endZ}`);
 
   const url = `https://routing.mazemap.com/routing/v2/a-to-b/?${params}`;
@@ -84,18 +123,27 @@ export async function fetchRoute(selectedStart, selectedEnd) {
   return { tripData: data, startCoords, endCoords, startZ, endZ };
 }
 
-export function extractInstructions(tripData, selectedStart, selectedEnd) {
-  if (!tripData) return { steps: [], error: 'No route data received.' };
+interface RouteApiResponse {
+  routes?: Array<{
+    legs?: Array<{
+      instructions?: { steps?: Array<{ instruction?: string }> };
+      basic?: { steps?: Array<{ properties?: { distance?: number; timeEstimateSeconds?: number } }> };
+    }>;
+    properties?: { timeEstimateSeconds?: number };
+  }>;
+}
 
-  // Response: { routes: [{ legs: [{ instructions: { steps: [...] }, basic: { steps: [...] } }], properties: { timeEstimateSeconds } }] }
-  const route = tripData.routes?.[0];
-  if (!route) return { steps: [], error: 'Route data has an unexpected format.' };
+export function extractInstructions(tripData: unknown, selectedStart: Poi, selectedEnd: Poi): ExtractedRoute {
+  if (!tripData) return { steps: [], error: 'No route data received.', totalDistance: 0, totalTime: 0 };
 
-  const steps = [];
+  const data = tripData as RouteApiResponse;
+  const route = data.routes?.[0];
+  if (!route) return { steps: [], error: 'Route data has an unexpected format.', totalDistance: 0, totalTime: 0 };
+
+  const steps: RouteStep[] = [];
 
   try {
     const instrSteps = route.legs?.[0]?.instructions?.steps || [];
-    // basic.steps carry per-step distance; zip them with instruction steps
     const basicSteps = route.legs?.[0]?.basic?.steps || [];
 
     instrSteps.forEach((step, i) => {
@@ -106,7 +154,8 @@ export function extractInstructions(tripData, selectedStart, selectedEnd) {
       steps.push({ text, distanceMeters, durationSeconds, floor: null });
     });
   } catch (e) {
-    return { steps: [], error: `Failed to parse route steps: ${e.message}` };
+    const err = e as Error;
+    return { steps: [], error: `Failed to parse route steps: ${err.message}`, totalDistance: 0, totalTime: 0 };
   }
 
   const totalTime = route.properties?.timeEstimateSeconds ?? 0;
@@ -124,18 +173,51 @@ export function extractInstructions(tripData, selectedStart, selectedEnd) {
   return { steps, error: null, totalDistance, totalTime };
 }
 
-export function parseRouteSteps(tripData, selectedStart, selectedEnd) {
+interface LegacyStep {
+  text: string;
+  distanceMeters: number;
+  time: number;
+  floor?: number;
+}
+
+interface LegacyRouteResult {
+  steps: LegacyStep[];
+  totalDistance: number;
+  totalTime: number;
+}
+
+export function parseRouteSteps(tripData: unknown, selectedStart: Poi, selectedEnd: Poi): LegacyRouteResult {
   let totalDistance = 0;
   let totalTime = 0;
-  const allSteps = [];
+  const allSteps: LegacyStep[] = [];
 
-  const legs = tripData?.trip?.legs
-    || tripData?.legs
-    || tripData?.routes?.[0]?.legs
-    || [];
+  const data = tripData as {
+    trip?: { legs?: unknown[]; summary?: { length?: number; distance?: number; time?: number; duration?: number } };
+    legs?: unknown[];
+    routes?: Array<{ legs?: unknown[] }>;
+  };
+
+  const legs = (data?.trip?.legs || data?.legs || data?.routes?.[0]?.legs || []) as Array<{
+    maneuvers?: unknown[];
+    steps?: unknown[];
+    instructions?: unknown[];
+  }>;
 
   legs.forEach(leg => {
-    const steps = leg.maneuvers || leg.steps || leg.instructions || [];
+    const steps = (leg.maneuvers || leg.steps || leg.instructions || []) as Array<{
+      length?: number;
+      distance?: number;
+      time?: number;
+      duration?: number;
+      instruction?: string;
+      text?: string;
+      description?: string;
+      name?: string;
+      action?: string;
+      floor?: number;
+      z?: number;
+    }>;
+
     steps.forEach(step => {
       const distanceMeters = step.length != null
         ? step.length * 1000
@@ -155,7 +237,7 @@ export function parseRouteSteps(tripData, selectedStart, selectedEnd) {
   });
 
   if (allSteps.length === 0) {
-    const summary = tripData?.trip?.summary || tripData?.summary || null;
+    const summary = data?.trip?.summary || null;
     if (summary) {
       totalDistance = summary.length != null ? summary.length * 1000 : (summary.distance || 0);
       totalTime = summary.time || summary.duration || 0;

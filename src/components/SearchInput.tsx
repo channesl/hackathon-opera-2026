@@ -1,18 +1,27 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { searchLocations } from '../api/mazemap';
+import { searchLocations, Poi } from '../api/mazemap';
 
-export default function SearchInput({ label, placeholder, onSelect, onClear, value, onChange }) {
-  const [results, setResults] = useState([]);
+interface SearchInputProps {
+  label: string;
+  placeholder: string;
+  value: string;
+  onChange: (value: string) => void;
+  onSelect: (poi: Poi) => void;
+  onClear: () => void;
+}
+
+export default function SearchInput({ label, placeholder, onSelect, onClear, value, onChange }: SearchInputProps) {
+  const [results, setResults] = useState<Poi[]>([]);
   const [open, setOpen] = useState(false);
-  const timerRef = useRef(null);
-  const containerRef = useRef(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const handleInput = useCallback((e) => {
+  const handleInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     onChange(query);
     onClear();
 
-    clearTimeout(timerRef.current);
+    if (timerRef.current) clearTimeout(timerRef.current);
     setResults([]);
     setOpen(false);
 
@@ -29,8 +38,8 @@ export default function SearchInput({ label, placeholder, onSelect, onClear, val
     }, 300);
   }, [onChange, onClear]);
 
-  const handleSelect = useCallback((poi) => {
-    const name = poi.title || poi.infos?.[0]?.name || 'Unknown';
+  const handleSelect = useCallback((poi: Poi) => {
+    const name = poi.title || 'Unknown';
     onChange(name);
     onSelect(poi);
     setOpen(false);
@@ -38,8 +47,8 @@ export default function SearchInput({ label, placeholder, onSelect, onClear, val
 
   // Close dropdown on outside click
   useEffect(() => {
-    const handler = (e) => {
-      if (containerRef.current && !containerRef.current.contains(e.target)) {
+    const handler = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
     };
@@ -49,7 +58,7 @@ export default function SearchInput({ label, placeholder, onSelect, onClear, val
 
   // Close on Escape
   useEffect(() => {
-    const handler = (e) => { if (e.key === 'Escape') setOpen(false); };
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
   }, []);
@@ -76,7 +85,7 @@ export default function SearchInput({ label, placeholder, onSelect, onClear, val
             </div>
           ) : (
             results.map((poi, i) => {
-              const name = poi.title || poi.infos?.[0]?.name || 'Unknown';
+              const name = poi.title || 'Unknown';
               const building = poi.buildingName || '';
               const floor = poi.floorName ? `Floor ${poi.floorName}` : '';
               const detail = [building, floor].filter(Boolean).join(' · ');

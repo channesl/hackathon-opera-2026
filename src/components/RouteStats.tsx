@@ -1,4 +1,10 @@
-export default function RouteStats({ totalDistance, totalTime, stepCount }) {
+interface RouteStatsProps {
+  totalDistance: number;
+  totalTime: number;
+  stepCount: number;
+}
+
+export default function RouteStats({ totalDistance, totalTime, stepCount }: RouteStatsProps) {
   const distanceStr = totalDistance >= 1000
     ? (totalDistance / 1000).toFixed(1) + ' km'
     : Math.round(totalDistance) + ' m';

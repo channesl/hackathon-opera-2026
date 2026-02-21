@@ -1,4 +1,11 @@
-export default function RouteInstructions({ steps, error }) {
+import { RouteStep } from '../api/mazemap';
+
+interface RouteInstructionsProps {
+  steps: RouteStep[];
+  error: string | null;
+}
+
+export default function RouteInstructions({ steps, error }: RouteInstructionsProps) {
   if (error) {
     return (
       <div className="route-instructions-card">
