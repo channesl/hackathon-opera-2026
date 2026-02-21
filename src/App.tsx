@@ -2,7 +2,7 @@ import { useState } from 'react';
 import SearchInput from './components/SearchInput';
 import TreasureStep from './components/TreasureStep';
 import { fetchRoute, extractInstructions, Poi, RouteStep } from './api/mazemap';
-import { pirateifyInstructions } from './api/openai';
+import { pirateifyInstructions, Difficulty } from './api/openai';
 
 interface RouteData {
   steps: RouteStep[];
@@ -23,6 +23,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [routeData, setRouteData] = useState<RouteData | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
+  const [difficulty, setDifficulty] = useState<Difficulty>('normal');
 
   const handleSwap = () => {
     setStartValue(endValue);
@@ -61,7 +62,7 @@ export default function App() {
       if (apiKey && apiKey !== 'your-api-key-here') {
         try {
           const originalTexts = steps.map(s => s.text);
-          const pirateTexts = await pirateifyInstructions(originalTexts, apiKey);
+          const pirateTexts = await pirateifyInstructions(originalTexts, apiKey, difficulty);
           pirateSteps = steps.map((s, i) => ({ ...s, text: pirateTexts[i] }));
         } catch (aiErr) {
           console.warn('AI riddle generation failed, using original instructions:', aiErr);
@@ -117,6 +118,31 @@ export default function App() {
           onSelect={setSelectedEnd}
           onClear={() => setSelectedEnd(null)}
         />
+
+        {/* Difficulty Selector */}
+        <div className="difficulty-selector">
+          <label className="difficulty-label">⚔️ Clue Difficulty</label>
+          <div className="difficulty-options">
+            {(['easy', 'normal', 'hard'] as Difficulty[]).map((level) => (
+              <button
+                key={level}
+                className={`difficulty-btn difficulty-btn-${level}${difficulty === level ? ' active' : ''}`}
+                onClick={() => setDifficulty(level)}
+                disabled={loading}
+              >
+                <span className="difficulty-icon">
+                  {level === 'easy' ? '🧭' : level === 'normal' ? '🗺️' : '💀'}
+                </span>
+                <span className="difficulty-text">
+                  {level === 'easy' ? 'Easy' : level === 'normal' ? 'Normal' : 'Hard'}
+                </span>
+                <span className="difficulty-desc">
+                  {level === 'easy' ? 'Clear directions' : level === 'normal' ? 'Pirate clues' : 'Cryptic riddles'}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
 
         <button className="btn-route" onClick={handleFindRoute} disabled={loading}>
           🗺️ Find Treasure Route

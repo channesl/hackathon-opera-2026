@@ -209,6 +209,141 @@ body::before {
   box-shadow: none;
 }
 
+/* ─── Difficulty Selector ─────────── */
+.difficulty-selector {
+  margin: 18px 0 12px;
+}
+
+.difficulty-label {
+  display: block;
+  font-family: 'Pirata One', cursive;
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #c9963a;
+  margin-bottom: 10px;
+}
+
+.difficulty-options {
+  display: flex;
+  gap: 10px;
+}
+
+.difficulty-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 8px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(212, 168, 67, 0.12);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.difficulty-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  border-radius: 12px;
+}
+
+.difficulty-btn-easy::before {
+  background: radial-gradient(ellipse at center, rgba(0, 180, 170, 0.15) 0%, transparent 70%);
+}
+
+.difficulty-btn-normal::before {
+  background: radial-gradient(ellipse at center, rgba(212, 168, 67, 0.15) 0%, transparent 70%);
+}
+
+.difficulty-btn-hard::before {
+  background: radial-gradient(ellipse at center, rgba(200, 60, 50, 0.15) 0%, transparent 70%);
+}
+
+.difficulty-btn:hover:not(:disabled) {
+  border-color: rgba(212, 168, 67, 0.3);
+  transform: translateY(-2px);
+}
+
+.difficulty-btn:hover:not(:disabled)::before {
+  opacity: 1;
+}
+
+.difficulty-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.difficulty-btn.active {
+  transform: translateY(-2px);
+}
+
+.difficulty-btn-easy.active {
+  border-color: rgba(0, 180, 170, 0.6);
+  background: rgba(0, 180, 170, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 180, 170, 0.15), inset 0 1px 0 rgba(0, 180, 170, 0.1);
+}
+
+.difficulty-btn-easy.active::before {
+  opacity: 1;
+}
+
+.difficulty-btn-normal.active {
+  border-color: rgba(212, 168, 67, 0.6);
+  background: rgba(212, 168, 67, 0.1);
+  box-shadow: 0 4px 20px rgba(212, 168, 67, 0.15), inset 0 1px 0 rgba(212, 168, 67, 0.1);
+}
+
+.difficulty-btn-normal.active::before {
+  opacity: 1;
+}
+
+.difficulty-btn-hard.active {
+  border-color: rgba(200, 60, 50, 0.6);
+  background: rgba(200, 60, 50, 0.1);
+  box-shadow: 0 4px 20px rgba(200, 60, 50, 0.15), inset 0 1px 0 rgba(200, 60, 50, 0.1);
+}
+
+.difficulty-btn-hard.active::before {
+  opacity: 1;
+}
+
+.difficulty-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.difficulty-text {
+  font-family: 'Pirata One', cursive;
+  font-size: 0.95rem;
+  color: #e0d8c8;
+  letter-spacing: 0.5px;
+}
+
+.difficulty-desc {
+  font-size: 0.7rem;
+  color: #8e8a7c;
+  font-style: italic;
+}
+
+.difficulty-btn-easy.active .difficulty-text {
+  color: #4dd9d0;
+}
+
+.difficulty-btn-normal.active .difficulty-text {
+  color: #f0c75e;
+}
+
+.difficulty-btn-hard.active .difficulty-text {
+  color: #e57373;
+}
+
 /* ─── Status Messages ─────────────── */
 .status {
   padding: 12px 16px;
@@ -253,13 +388,15 @@ body::before {
 .treasure-card::before {
   content: '';
   position: absolute;
-  top: -1px; left: -1px; right: -1px; bottom: -1px;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
   border-radius: 17px;
   background: linear-gradient(135deg,
-    rgba(240, 199, 94, 0) 0%,
-    rgba(240, 199, 94, 0.3) 50%,
-    rgba(240, 199, 94, 0) 100%
-  );
+      rgba(240, 199, 94, 0) 0%,
+      rgba(240, 199, 94, 0.3) 50%,
+      rgba(240, 199, 94, 0) 100%);
   background-size: 200% 200%;
   animation: goldShimmer 4s ease-in-out infinite;
   z-index: -1;
@@ -267,8 +404,15 @@ body::before {
 }
 
 @keyframes goldShimmer {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 /* Progress */
@@ -311,13 +455,20 @@ body::before {
   font-size: 2.2rem;
   line-height: 1;
   flex-shrink: 0;
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
   animation: skullBob 3s ease-in-out infinite;
 }
 
 @keyframes skullBob {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-4px) rotate(3deg); }
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-4px) rotate(3deg);
+  }
 }
 
 .treasure-clue {
@@ -392,8 +543,15 @@ body::before {
 }
 
 @keyframes pulseGold {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(240, 199, 94, 0.3); }
-  50% { box-shadow: 0 0 20px 4px rgba(240, 199, 94, 0.2); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(240, 199, 94, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 20px 4px rgba(240, 199, 94, 0.2);
+  }
 }
 
 .btn-treasure-finish:hover {
@@ -413,9 +571,19 @@ body::before {
 }
 
 @keyframes celebrationBounce {
-  0% { transform: scale(0) rotate(-30deg); opacity: 0; }
-  60% { transform: scale(1.2) rotate(5deg); }
-  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  0% {
+    transform: scale(0) rotate(-30deg);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.2) rotate(5deg);
+  }
+
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
 }
 
 .treasure-found-title {
@@ -455,8 +623,15 @@ body::before {
 
 /* Card fade-in */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .card-fade,
@@ -500,5 +675,21 @@ body::before {
   .btn-treasure-nav {
     padding: 10px 16px;
     font-size: 0.9rem;
+  }
+
+  .difficulty-btn {
+    padding: 10px 6px 8px;
+  }
+
+  .difficulty-icon {
+    font-size: 1.2rem;
+  }
+
+  .difficulty-text {
+    font-size: 0.85rem;
+  }
+
+  .difficulty-desc {
+    font-size: 0.65rem;
   }
 }
