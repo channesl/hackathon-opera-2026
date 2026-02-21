@@ -2,6 +2,7 @@ import { useState } from 'react';
 import SearchInput from './components/SearchInput';
 import TreasureStep from './components/TreasureStep';
 import { fetchRoute, extractInstructions, Poi, RouteStep } from './api/mazemap';
+import { pirateifyInstructions } from './api/openai';
 
 interface RouteData {
   steps: RouteStep[];
@@ -45,13 +46,32 @@ export default function App() {
       const { tripData } = await fetchRoute(selectedStart, selectedEnd);
       const { steps, error: stepsError } = extractInstructions(tripData, selectedStart, selectedEnd);
 
-      setRouteData({ steps, stepsError });
-
-      if (stepsError) {
-        setStatus({ msg: `☠️ ${stepsError}`, type: 'error' });
-      } else {
-        setStatus({ msg: '🏴‍☠️ Yer treasure map be ready! Follow the clues...', type: 'success' });
+      if (stepsError || steps.length === 0) {
+        setRouteData({ steps, stepsError });
+        setStatus({ msg: `☠️ ${stepsError || 'No route found'}`, type: 'error' });
+        return;
       }
+
+      // Transform instructions into pirate riddles via AI
+      setStatus({ msg: '🦜 Yer parrot be translatin\' the clues into pirate speak...', type: 'loading' });
+
+      const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+      let pirateSteps = steps;
+
+      if (apiKey && apiKey !== 'your-api-key-here') {
+        try {
+          const originalTexts = steps.map(s => s.text);
+          const pirateTexts = await pirateifyInstructions(originalTexts, apiKey);
+          pirateSteps = steps.map((s, i) => ({ ...s, text: pirateTexts[i] }));
+        } catch (aiErr) {
+          console.warn('AI riddle generation failed, using original instructions:', aiErr);
+          // Fall through with original steps — still works, just not pirate-ified
+        }
+      }
+
+      setRouteData({ steps: pirateSteps, stepsError: null });
+      setStatus({ msg: '🏴‍☠️ Yer treasure map be ready! Follow the clues...', type: 'success' });
+
     } catch (err) {
       console.error('Routing error:', err);
       setStatus({ msg: `☠️ Arr! The seas be rough: ${(err as Error).message}`, type: 'error' });
