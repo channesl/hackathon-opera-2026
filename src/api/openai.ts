@@ -107,7 +107,8 @@ export interface SpeechHandle {
 }
 
 /**
- * Speak the given text using OpenAI TTS with a pirate-ish voice.
+ * Speak the given text using OpenAI TTS with a pirate voice.
+ * Uses gpt-4o-mini-tts with instructions for pirate delivery.
  * Returns a handle to stop playback.
  */
 export function speakClue(text: string, apiKey: string): SpeechHandle {
@@ -123,9 +124,10 @@ export function speakClue(text: string, apiKey: string): SpeechHandle {
                 'Authorization': `Bearer ${apiKey}`,
             },
             body: JSON.stringify({
-                model: 'tts-1',
-                voice: 'fable',
+                model: 'gpt-4o-mini-tts',
+                voice: 'coral',
                 input: text,
+                instructions: 'Speak like a grizzled old pirate captain. Use a rough, gravelly, dramatic voice with a thick pirate accent. Add occasional pirate interjections like "Arrr" or "Yarr". Sound weathered, commanding, and theatrical — like a salty sea dog reading a treasure map to his crew.',
                 response_format: 'mp3',
             }),
             signal: controller.signal,

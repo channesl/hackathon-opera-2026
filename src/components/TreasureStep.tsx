@@ -1,4 +1,6 @@
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { RouteStep } from '../api/mazemap';
+import { speakClue, SpeechHandle } from '../api/openai';
 
 interface TreasureStepProps {
     steps: RouteStep[];
@@ -6,9 +8,53 @@ interface TreasureStepProps {
     onNext: () => void;
     onPrev: () => void;
     onReset: () => void;
+    apiKey: string | null;
 }
 
-export default function TreasureStep({ steps, currentStep, onNext, onPrev, onReset }: TreasureStepProps) {
+type SpeechState = 'idle' | 'loading' | 'playing';
+
+export default function TreasureStep({ steps, currentStep, onNext, onPrev, onReset, apiKey }: TreasureStepProps) {
+    const [speechState, setSpeechState] = useState<SpeechState>('idle');
+    const speechRef = useRef<SpeechHandle | null>(null);
+
+    const stopSpeech = useCallback(() => {
+        if (speechRef.current) {
+            speechRef.current.stop();
+            speechRef.current = null;
+        }
+        setSpeechState('idle');
+    }, []);
+
+    // Auto-stop when step changes or component unmounts
+    useEffect(() => {
+        return () => stopSpeech();
+    }, [currentStep, stopSpeech]);
+
+    const handleSpeak = async () => {
+        if (speechState !== 'idle') {
+            stopSpeech();
+            return;
+        }
+
+        if (!apiKey || !step) return;
+
+        setSpeechState('loading');
+        const handle = speakClue(step.text, apiKey);
+        speechRef.current = handle;
+
+        // Once the fetch resolves and audio starts, switch to 'playing'
+        // We detect this by waiting a tick after the promise starts
+        // The done promise resolves when audio finishes
+        handle.done.then(() => {
+            setSpeechState('idle');
+            speechRef.current = null;
+        });
+
+        // Small delay to transition from loading → playing
+        // (the audio starts playing inside speakClue once the blob is ready)
+        setSpeechState('playing');
+    };
+
     if (!steps || steps.length === 0) return null;
 
     const isLast = currentStep >= steps.length - 1;
@@ -63,6 +109,15 @@ export default function TreasureStep({ steps, currentStep, onNext, onPrev, onRes
                         <p className="treasure-clue-distance">⚓ {distLabel}</p>
                     )}
                 </div>
+                {apiKey && (
+                    <button
+                        className={`btn-speak${speechState !== 'idle' ? ' active' : ''}${speechState === 'loading' ? ' loading' : ''}`}
+                        onClick={handleSpeak}
+                        title={speechState === 'idle' ? 'Read clue aloud' : 'Stop'}
+                    >
+                        {speechState === 'loading' ? '⏳' : speechState === 'playing' ? '⏹️' : '🔊'}
+                    </button>
+                )}
             </div>
 
             {/* Navigation */}

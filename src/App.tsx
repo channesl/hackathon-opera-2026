@@ -160,6 +160,7 @@ export default function App() {
           onNext={() => setCurrentStep(s => s + 1)}
           onPrev={() => setCurrentStep(s => Math.max(0, s - 1))}
           onReset={handleReset}
+          apiKey={import.meta.env.VITE_OPENAI_API_KEY || null}
         />
       )}
     </>
