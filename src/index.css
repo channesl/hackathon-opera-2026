@@ -257,6 +257,20 @@ body::after {
   position: relative;
 }
 
+.app-header-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  margin-bottom: 8px;
+}
+
+.app-logo {
+  height: 1.6em;
+  width: auto;
+  mix-blend-mode: multiply;
+}
+
 .app-header h1 {
   font-family: 'Pirata One', cursive;
   font-size: 3rem;
