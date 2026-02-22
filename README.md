@@ -49,3 +49,5 @@ npm run build
 ```bash
 npx tsc --noEmit
 ```
+
+Done!
