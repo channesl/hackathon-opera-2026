@@ -8,7 +8,7 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: linear-gradient(160deg, #0a0e17 0%, #1a1a2e 40%, #16213e 100%);
+  background: linear-gradient(180deg, #050a14 0%, #0a1628 30%, #0d1f3c 60%, #132a4a 100%);
   min-height: 100vh;
   color: #e0d8c8;
   padding: 24px;
@@ -16,14 +16,46 @@ body {
   overflow-x: hidden;
 }
 
-/* Subtle repeating wave pattern overlay */
+/* ─── Starfield background ────────── */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse at 20% 80%, rgba(212, 168, 67, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(0, 120, 150, 0.08) 0%, transparent 50%);
+    radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 25% 35%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1.5px 1.5px at 40% 10%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 55% 45%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1.5px 1.5px at 85% 30%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 15% 55%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 30% 70%, rgba(255,255,255,0.3), transparent),
+    radial-gradient(1.5px 1.5px at 60% 5%, rgba(255,255,255,0.9), transparent),
+    radial-gradient(1px 1px at 90% 50%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 5% 80%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1.5px 1.5px at 50% 25%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 75% 60%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 35% 85%, rgba(255,255,255,0.3), transparent),
+    radial-gradient(1.5px 1.5px at 95% 10%, rgba(255,255,255,0.7), transparent);
+  pointer-events: none;
+  z-index: 0;
+  animation: twinkleStars 4s ease-in-out infinite alternate;
+}
+
+@keyframes twinkleStars {
+  0% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+/* ─── Gold atmospheric glows ──────── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 80%, rgba(212, 168, 67, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(0, 80, 120, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 90%, rgba(0, 60, 100, 0.15) 0%, transparent 40%);
   pointer-events: none;
   z-index: 0;
 }
@@ -31,42 +63,251 @@ body::before {
 #root {
   position: relative;
   z-index: 1;
+  padding-bottom: 120px;
+}
+
+/* ─── Ocean Waves ─────────────────── */
+.ocean-waves {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 140px;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.wave {
+  position: absolute;
+  bottom: 0;
+  left: -5%;
+  width: 110%;
+  height: 100%;
+}
+
+.wave svg {
+  position: absolute;
+  bottom: 0;
+  width: 200%;
+  height: 100%;
+}
+
+.wave1 svg {
+  fill: rgba(6, 30, 60, 0.8);
+  animation: waveMove1 7s ease-in-out infinite;
+}
+
+.wave2 svg {
+  fill: rgba(8, 40, 75, 0.5);
+  animation: waveMove2 9s ease-in-out infinite;
+  bottom: -8px;
+}
+
+.wave3 svg {
+  fill: rgba(10, 50, 90, 0.3);
+  animation: waveMove3 11s ease-in-out infinite;
+  bottom: -16px;
+}
+
+@keyframes waveMove1 {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-25%); }
+}
+@keyframes waveMove2 {
+  0%, 100% { transform: translateX(-10%); }
+  50% { transform: translateX(-35%); }
+}
+@keyframes waveMove3 {
+  0%, 100% { transform: translateX(-5%); }
+  50% { transform: translateX(-30%); }
+}
+
+/* ─── Floating Pirate Particles ───── */
+.pirate-particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.pirate-particle {
+  position: absolute;
+  font-size: 1.4rem;
+  opacity: 0;
+  animation: floatParticle 18s linear infinite;
+}
+
+.pirate-particle:nth-child(1) {
+  left: 5%;
+  animation-delay: 0s;
+  animation-duration: 20s;
+}
+.pirate-particle:nth-child(2) {
+  left: 20%;
+  animation-delay: 3s;
+  animation-duration: 22s;
+}
+.pirate-particle:nth-child(3) {
+  left: 45%;
+  animation-delay: 6s;
+  animation-duration: 18s;
+}
+.pirate-particle:nth-child(4) {
+  left: 65%;
+  animation-delay: 9s;
+  animation-duration: 24s;
+}
+.pirate-particle:nth-child(5) {
+  left: 85%;
+  animation-delay: 12s;
+  animation-duration: 19s;
+}
+.pirate-particle:nth-child(6) {
+  left: 35%;
+  animation-delay: 15s;
+  animation-duration: 21s;
+}
+
+@keyframes floatParticle {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  5% { opacity: 0.15; }
+  50% { opacity: 0.2; }
+  95% { opacity: 0.1; }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* ─── Compass Rose Decoration ─────── */
+.compass-rose {
+  position: fixed;
+  bottom: 100px;
+  right: 30px;
+  width: 100px;
+  height: 100px;
+  opacity: 0.06;
+  z-index: 0;
+  pointer-events: none;
+  animation: compassSpin 60s linear infinite;
+}
+
+@keyframes compassSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* ─── Header ──────────────────────── */
 .app-header {
   text-align: center;
   margin-bottom: 32px;
+  position: relative;
 }
 
 .app-header h1 {
   font-family: 'Pirata One', cursive;
-  font-size: 2.8rem;
+  font-size: 3rem;
   font-weight: 400;
-  background: linear-gradient(135deg, #f0c75e 0%, #d4a843 40%, #c9963a 100%);
+  background: linear-gradient(135deg, #f5d76e 0%, #f0c75e 25%, #d4a843 50%, #c9963a 75%, #f5d76e 100%);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 8px;
   text-shadow: none;
-  filter: drop-shadow(0 2px 8px rgba(212, 168, 67, 0.3));
+  filter: drop-shadow(0 2px 12px rgba(212, 168, 67, 0.4));
+  animation: goldTextShimmer 4s linear infinite;
+  letter-spacing: 2px;
+}
+
+@keyframes goldTextShimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
 }
 
 .app-header p {
-  color: #8e8a7c;
-  font-size: 0.95rem;
+  color: #a09882;
+  font-size: 1rem;
   font-style: italic;
+  letter-spacing: 0.5px;
+}
+
+/* Decorative skull divider under header */
+.app-header::after {
+  content: '☠ ⚓ ☠';
+  display: block;
+  margin-top: 12px;
+  font-size: 0.85rem;
+  letter-spacing: 12px;
+  color: rgba(212, 168, 67, 0.25);
+  animation: subtlePulse 3s ease-in-out infinite;
+}
+
+@keyframes subtlePulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }
 
 /* ─── Card ────────────────────────── */
 .card {
-  background: rgba(30, 25, 20, 0.7);
+  background:
+    linear-gradient(135deg, rgba(35, 28, 18, 0.85) 0%, rgba(25, 20, 15, 0.9) 100%);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(212, 168, 67, 0.15);
+  border: 1px solid rgba(212, 168, 67, 0.2);
   border-radius: 16px;
   padding: 28px;
   max-width: 620px;
   margin: 0 auto 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Rope-style top & bottom borders */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(180, 140, 60, 0.5) 0px,
+    rgba(180, 140, 60, 0.5) 8px,
+    rgba(120, 90, 30, 0.3) 8px,
+    rgba(120, 90, 30, 0.3) 12px
+  );
+  border-radius: 2px;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 20px;
+  right: 20px;
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(180, 140, 60, 0.5) 0px,
+    rgba(180, 140, 60, 0.5) 8px,
+    rgba(120, 90, 30, 0.3) 8px,
+    rgba(120, 90, 30, 0.3) 12px
+  );
+  border-radius: 2px;
+}
+
+/* Parchment corner accents */
+.card-corner {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  opacity: 0.15;
 }
 
 /* ─── Search ──────────────────────── */
@@ -78,7 +319,7 @@ body::before {
 .search-group label {
   display: block;
   font-family: 'Pirata One', cursive;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 400;
   letter-spacing: 1px;
   color: #c9963a;
@@ -94,21 +335,23 @@ body::before {
   color: #e0d8c8;
   font-size: 1rem;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
 }
 
 .search-group input::placeholder {
   color: #5a5548;
+  font-style: italic;
 }
 
 .search-group input:focus {
   border-color: #d4a843;
-  box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.2);
+  box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.2), 0 0 20px rgba(212, 168, 67, 0.1);
+  background: rgba(255, 255, 255, 0.07);
 }
 
 .search-group input.selected {
   border-color: #f0c75e;
-  box-shadow: 0 0 0 2px rgba(240, 199, 94, 0.2);
+  box-shadow: 0 0 0 2px rgba(240, 199, 94, 0.2), 0 0 15px rgba(240, 199, 94, 0.08);
 }
 
 /* ─── Autocomplete ────────────────── */
@@ -117,20 +360,20 @@ body::before {
   top: 100%;
   left: 0;
   right: 0;
-  background: #1a1510;
-  border: 1px solid rgba(212, 168, 67, 0.2);
+  background: rgba(20, 16, 10, 0.97);
+  border: 1px solid rgba(212, 168, 67, 0.25);
   border-radius: 10px;
   margin-top: 4px;
   max-height: 220px;
   overflow-y: auto;
   z-index: 100;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 60px rgba(212, 168, 67, 0.05);
 }
 
 .autocomplete-item {
   padding: 12px 18px;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.2s, padding-left 0.2s;
   border-bottom: 1px solid rgba(212, 168, 67, 0.06);
 }
 
@@ -139,7 +382,8 @@ body::before {
 }
 
 .autocomplete-item:hover {
-  background: rgba(212, 168, 67, 0.1);
+  background: rgba(212, 168, 67, 0.12);
+  padding-left: 22px;
 }
 
 .autocomplete-item .poi-title {
@@ -160,13 +404,13 @@ body::before {
   align-items: center;
   justify-content: center;
   margin: -6px auto 10px;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: rgba(212, 168, 67, 0.1);
-  border: 1px solid rgba(212, 168, 67, 0.2);
+  border: 1px solid rgba(212, 168, 67, 0.25);
   cursor: pointer;
-  transition: background 0.15s, transform 0.3s;
+  transition: background 0.2s, transform 0.4s, box-shadow 0.2s;
   font-size: 1.1rem;
   color: #d4a843;
 }
@@ -174,6 +418,7 @@ body::before {
 .swap-btn:hover {
   background: rgba(212, 168, 67, 0.2);
   transform: rotate(180deg);
+  box-shadow: 0 0 12px rgba(212, 168, 67, 0.2);
 }
 
 /* ─── Main Action Button ─────────── */
@@ -185,17 +430,36 @@ body::before {
   background: linear-gradient(135deg, #d4a843, #8b6914);
   color: #1a1510;
   font-family: 'Pirata One', cursive;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 400;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
-  letter-spacing: 1px;
+  transition: transform 0.15s, box-shadow 0.3s, opacity 0.2s;
+  letter-spacing: 1.5px;
   margin-top: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Button gold shimmer on hover */
+.btn-route::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -75%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transform: skewX(-25deg);
+  transition: left 0.6s ease;
+}
+
+.btn-route:hover::before {
+  left: 125%;
 }
 
 .btn-route:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 28px rgba(212, 168, 67, 0.35);
+  box-shadow: 0 6px 28px rgba(212, 168, 67, 0.4), 0 0 60px rgba(212, 168, 67, 0.1);
 }
 
 .btn-route:active {
@@ -209,6 +473,10 @@ body::before {
   box-shadow: none;
 }
 
+.btn-route:disabled::before {
+  display: none;
+}
+
 /* ─── Difficulty Selector ─────────── */
 .difficulty-selector {
   margin: 18px 0 12px;
@@ -217,7 +485,7 @@ body::before {
 .difficulty-label {
   display: block;
   font-family: 'Pirata One', cursive;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 400;
   letter-spacing: 1px;
   color: #c9963a;
@@ -357,6 +625,12 @@ body::before {
   background: rgba(212, 168, 67, 0.1);
   color: #d4a843;
   border: 1px solid rgba(212, 168, 67, 0.2);
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+  0%, 100% { background: rgba(212, 168, 67, 0.08); }
+  50% { background: rgba(212, 168, 67, 0.15); }
 }
 
 .status.success {
@@ -375,7 +649,8 @@ body::before {
 .treasure-card {
   max-width: 620px;
   margin: 0 auto 24px;
-  background: rgba(30, 25, 20, 0.75);
+  background:
+    linear-gradient(135deg, rgba(35, 28, 18, 0.85) 0%, rgba(25, 20, 15, 0.9) 100%);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(212, 168, 67, 0.25);
   border-radius: 16px;
@@ -384,8 +659,27 @@ body::before {
   overflow: hidden;
 }
 
-/* Gold shimmer border effect */
+/* Rope borders on treasure card too */
 .treasure-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(180, 140, 60, 0.5) 0px,
+    rgba(180, 140, 60, 0.5) 8px,
+    rgba(120, 90, 30, 0.3) 8px,
+    rgba(120, 90, 30, 0.3) 12px
+  );
+  border-radius: 2px;
+  z-index: 2;
+}
+
+/* Gold shimmer border effect overlay */
+.treasure-card::after {
   content: '';
   position: absolute;
   top: -1px;
@@ -404,12 +698,10 @@ body::before {
 }
 
 @keyframes goldShimmer {
-
   0%,
   100% {
     background-position: 0% 50%;
   }
-
   50% {
     background-position: 100% 50%;
   }
@@ -441,6 +733,25 @@ body::before {
   background: linear-gradient(90deg, #8b6914, #d4a843, #f0c75e);
   border-radius: 3px;
   transition: width 0.4s ease;
+  position: relative;
+}
+
+/* Sparkle on progress fill */
+.treasure-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4));
+  border-radius: 3px;
+  animation: progressGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes progressGlow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
 }
 
 /* Clue */
@@ -452,22 +763,20 @@ body::before {
 }
 
 .treasure-clue-decoration {
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   line-height: 1;
   flex-shrink: 0;
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
   animation: skullBob 3s ease-in-out infinite;
 }
 
 @keyframes skullBob {
-
   0%,
   100% {
     transform: translateY(0) rotate(0deg);
   }
-
   50% {
-    transform: translateY(-4px) rotate(3deg);
+    transform: translateY(-6px) rotate(5deg);
   }
 }
 
@@ -523,25 +832,18 @@ body::before {
 }
 
 @keyframes speakPulse {
-
   0%,
   100% {
     box-shadow: 0 0 0 0 rgba(212, 168, 67, 0.3);
   }
-
   50% {
     box-shadow: 0 0 16px 4px rgba(212, 168, 67, 0.2);
   }
 }
 
 @keyframes speakSpin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Navigation Buttons */
@@ -560,6 +862,8 @@ body::before {
   transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
   border: none;
   letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-treasure-prev {
@@ -584,6 +888,23 @@ body::before {
   max-width: 280px;
 }
 
+/* Next button shimmer */
+.btn-treasure-next::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -75%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+  transform: skewX(-25deg);
+  transition: left 0.6s ease;
+}
+
+.btn-treasure-next:hover::before {
+  left: 125%;
+}
+
 .btn-treasure-next:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 20px rgba(212, 168, 67, 0.3);
@@ -598,14 +919,12 @@ body::before {
 }
 
 @keyframes pulseGold {
-
   0%,
   100% {
     box-shadow: 0 0 0 0 rgba(240, 199, 94, 0.3);
   }
-
   50% {
-    box-shadow: 0 0 20px 4px rgba(240, 199, 94, 0.2);
+    box-shadow: 0 0 20px 6px rgba(240, 199, 94, 0.25);
   }
 }
 
@@ -630,11 +949,9 @@ body::before {
     transform: scale(0) rotate(-30deg);
     opacity: 0;
   }
-
   60% {
     transform: scale(1.2) rotate(5deg);
   }
-
   100% {
     transform: scale(1) rotate(0deg);
     opacity: 1;
@@ -643,16 +960,18 @@ body::before {
 
 .treasure-found-title {
   font-family: 'Pirata One', cursive;
-  font-size: 2rem;
-  background: linear-gradient(135deg, #f0c75e, #d4a843);
+  font-size: 2.2rem;
+  background: linear-gradient(135deg, #f5d76e, #f0c75e, #d4a843);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 12px;
+  animation: goldTextShimmer 3s linear infinite;
 }
 
 .treasure-found-text {
-  color: #8e8a7c;
+  color: #a09882;
   font-size: 1rem;
   margin-bottom: 28px;
   font-style: italic;
@@ -669,6 +988,24 @@ body::before {
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.2s;
   letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-treasure-reset::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -75%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+  transform: skewX(-25deg);
+  transition: left 0.6s ease;
+}
+
+.btn-treasure-reset:hover::before {
+  left: 125%;
 }
 
 .btn-treasure-reset:hover {
@@ -680,9 +1017,8 @@ body::before {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(16px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -708,6 +1044,15 @@ body::before {
   border-radius: 3px;
 }
 
+/* ─── Treasure Map Vignette ───────── */
+.map-vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(5, 10, 20, 0.6) 100%);
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   body {
@@ -715,7 +1060,7 @@ body::before {
   }
 
   .app-header h1 {
-    font-size: 2rem;
+    font-size: 2.2rem;
   }
 
   .card,
@@ -746,5 +1091,13 @@ body::before {
 
   .difficulty-desc {
     font-size: 0.65rem;
+  }
+
+  .compass-rose {
+    display: none;
+  }
+
+  .ocean-waves {
+    height: 80px;
   }
 }

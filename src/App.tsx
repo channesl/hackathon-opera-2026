@@ -93,6 +93,64 @@ export default function App() {
 
   return (
     <>
+      {/* ── Decorative Background Layers ── */}
+      <div className="map-vignette" />
+
+      {/* Floating pirate particles */}
+      <div className="pirate-particles">
+        <span className="pirate-particle">⚓</span>
+        <span className="pirate-particle">⚔️</span>
+        <span className="pirate-particle">🧭</span>
+        <span className="pirate-particle">☠️</span>
+        <span className="pirate-particle">🗡️</span>
+        <span className="pirate-particle">🪙</span>
+      </div>
+
+      {/* Compass Rose */}
+      <div className="compass-rose">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="48" stroke="rgba(212,168,67,0.4)" strokeWidth="1" />
+          <circle cx="50" cy="50" r="38" stroke="rgba(212,168,67,0.2)" strokeWidth="0.5" />
+          {/* N/S/E/W points */}
+          <polygon points="50,2 45,35 50,28 55,35" fill="rgba(212,168,67,0.5)" />
+          <polygon points="50,98 55,65 50,72 45,65" fill="rgba(212,168,67,0.3)" />
+          <polygon points="2,50 35,45 28,50 35,55" fill="rgba(212,168,67,0.3)" />
+          <polygon points="98,50 65,55 72,50 65,45" fill="rgba(212,168,67,0.3)" />
+          {/* Diagonal points */}
+          <polygon points="15,15 38,38 32,40 40,32" fill="rgba(212,168,67,0.15)" />
+          <polygon points="85,85 62,62 68,60 60,68" fill="rgba(212,168,67,0.15)" />
+          <polygon points="85,15 62,38 60,32 68,40" fill="rgba(212,168,67,0.15)" />
+          <polygon points="15,85 38,62 40,68 32,60" fill="rgba(212,168,67,0.15)" />
+          {/* Center dot */}
+          <circle cx="50" cy="50" r="3" fill="rgba(212,168,67,0.5)" />
+          {/* Cardinal labels */}
+          <text x="50" y="16" textAnchor="middle" fill="rgba(212,168,67,0.5)" fontSize="8" fontFamily="Pirata One">N</text>
+          <text x="50" y="92" textAnchor="middle" fill="rgba(212,168,67,0.3)" fontSize="8" fontFamily="Pirata One">S</text>
+          <text x="9" y="53" textAnchor="middle" fill="rgba(212,168,67,0.3)" fontSize="8" fontFamily="Pirata One">W</text>
+          <text x="91" y="53" textAnchor="middle" fill="rgba(212,168,67,0.3)" fontSize="8" fontFamily="Pirata One">E</text>
+        </svg>
+      </div>
+
+      {/* Ocean Waves */}
+      <div className="ocean-waves">
+        <div className="wave wave1">
+          <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+            <path d="M0,40 C120,80 240,10 360,40 C480,70 600,20 720,40 C840,60 960,10 1080,40 C1200,70 1320,20 1440,40 L1440,100 L0,100 Z" />
+          </svg>
+        </div>
+        <div className="wave wave2">
+          <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+            <path d="M0,50 C160,20 320,70 480,50 C640,30 800,70 960,50 C1120,30 1280,70 1440,50 L1440,100 L0,100 Z" />
+          </svg>
+        </div>
+        <div className="wave wave3">
+          <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+            <path d="M0,60 C200,30 400,80 600,60 C800,40 1000,80 1200,60 C1400,40 1440,70 1440,60 L1440,100 L0,100 Z" />
+          </svg>
+        </div>
+      </div>
+
+      {/* ── Main Content ── */}
       <div className="app-header">
         <h1>🏴‍☠️ Campus Treasure Hunt</h1>
         <p>Chart yer course across Campus Valla, ye scallywag!</p>
