@@ -3,6 +3,7 @@ import SearchInput from './components/SearchInput';
 import TreasureStep from './components/TreasureStep';
 import { fetchRoute, extractInstructions, Poi, RouteStep } from './api/mazemap';
 import { pirateifyInstructions, Difficulty } from './api/openai';
+import reallyImg from '../assets/images/really.JPEG';
 
 interface RouteData {
   steps: RouteStep[];
@@ -24,6 +25,7 @@ export default function App() {
   const [routeData, setRouteData] = useState<RouteData | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [difficulty, setDifficulty] = useState<Difficulty>('normal');
+  const [sameLocation, setSameLocation] = useState(false);
 
   const handleSwap = () => {
     setStartValue(endValue);
@@ -32,9 +34,19 @@ export default function App() {
     setSelectedEnd(selectedStart);
   };
 
+  const isSameLocation = (a: Poi, b: Poi) => {
+    if (a.poiId != null && b.poiId != null) return a.poiId === b.poiId;
+    return a.title === b.title && a.buildingName === b.buildingName;
+  };
+
   const handleFindRoute = async () => {
     if (!selectedStart || !selectedEnd) {
       setStatus({ msg: '⚠️ Pick both yer departure port and treasure destination, matey!', type: 'error' });
+      return;
+    }
+
+    if (isSameLocation(selectedStart, selectedEnd)) {
+      setSameLocation(true);
       return;
     }
 
@@ -89,6 +101,7 @@ export default function App() {
     setSelectedStart(null);
     setSelectedEnd(null);
     setStatus(null);
+    setSameLocation(false);
   };
 
   return (
@@ -210,6 +223,18 @@ export default function App() {
           <div className={`status ${status.type}`}>{status.msg}</div>
         )}
       </div>
+
+      {sameLocation && (
+        <div className="card" style={{ textAlign: 'center' }}>
+          <p style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>
+            ☠️ Arr, ye picked the same port twice, ye fool!
+          </p>
+          <img src={reallyImg} alt="Really?" style={{ maxWidth: '100%', borderRadius: '8px' }} />
+          <button className="btn-route" style={{ marginTop: '1rem' }} onClick={handleReset}>
+            🗺️ Try Again
+          </button>
+        </div>
+      )}
 
       {routeData && !routeData.stepsError && routeData.steps.length > 0 && (
         <TreasureStep
